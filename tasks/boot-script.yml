@@ -13,7 +13,7 @@
     enabled: "yes"
 
 - name: boot-script | Apache should be enabled
-  when: postfix.enabled == true
+  when: apache.enabled == true
   service:
     name:  "httpd"
     state: "started"

@@ -9,7 +9,7 @@
 apache:
   enabled: true
   started: true
-  configroot: "/etc/httpd"
-  serverroot: "/usr"
+  serverroot: "/etc/httpd"
+  configroot: "/etc/httpd/conf"
   workingdir: "/usr/local/src"
 

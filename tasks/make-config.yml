@@ -34,7 +34,7 @@
 - name: make-config | Deploy each config file in /etc/httpd/conf.modules.d
   notify: Restart Apache
   template:
-    src:  "etc/httpd/conf/{{ item }}.j2"
+    src:  "etc/httpd/conf.modules.d/{{ item }}.j2"
     dest: "{{ apache.serverroot }}/conf.modules.d/{{ item }}"
     mode: "0644"
   with_items:

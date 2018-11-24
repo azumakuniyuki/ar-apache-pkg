@@ -1,10 +1,10 @@
-Ansible Role: Postfix(pkg)
+Ansible Role: Apache(pkg)
 ================================================================================
-Install and configure Postfix as an SMTP Server
+Install and configure Apache as an HTTP Server
 
-- Install Postfix 2.10.1 using yum at CentOS 7
-- Configure files in /etc/postfix
-- Open tcp/25 and tcp/587
+- Install Apache 2.4.* using yum at CentOS 7
+- Configure files in /etc/httpd
+- Open tcp/80 and tcp/443
 
 Requirements
 --------------------------------------------------------------------------------
@@ -15,7 +15,12 @@ Role Variables
 The following variables are defined in defaults/main.yml file.
 
 ```yaml
-postfix:
+apache:
+  enabled: true
+  started: true
+  configroot: "/etc/httpd"
+  serverroot: "/usr"
+  workingdir: "/usr/local/src"
 ```
 
 Dependencies
@@ -27,7 +32,7 @@ Example Playbook
 ```yaml
 - hosts: servers
   roles:
-     - { role: azumakuniyuki.ar-postfix-pkg }
+     - { role: azumakuniyuki.ar-apache-pkg }
 ```
 
 License

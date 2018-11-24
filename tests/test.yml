@@ -2,4 +2,4 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - ar-postfix-pkg
+    - ar-apache-pkg

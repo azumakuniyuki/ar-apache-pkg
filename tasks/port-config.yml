@@ -5,9 +5,18 @@
 # | (_| | |_) | (_| | (__| | | |  __/ || |_) |   < (_| | |/ / | || (_| \__ \   <\__ \
 #  \__,_| .__/ \__,_|\___|_| |_|\___| || .__/|_|\_\__, | /_/   \__\__,_|___/_|\_\___/
 #       |_|                          \_\_|        |___/_/                            
-# tasks file for ar-apache-pkg
-- include: install-pkg.yml
-- include: make-config.yml
-- include: boot-script.yml
-- include: port-config.yml
+# port-config
+- name: port-config | HTTP(80) port should be opened
+  firewalld:
+    service:   "http"
+    state:     "enabled"
+    immediate: true
+    permanent: true
+
+- name: port-config | HTTPS(443) port should be opened
+  firewalld:
+    port:      "443/tcp"
+    state:     "enabled"
+    immediate: true
+    permanent: true
 

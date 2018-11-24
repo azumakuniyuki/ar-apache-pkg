@@ -6,4 +6,46 @@
 #  \__,_| .__/ \__,_|\___|_| |_|\___| || .__/|_|\_\__, | /_/   \__\__,_|___/_|\_\___/
 #       |_|                          \_\_|        |___/_/                            
 # make-config
-#- name: make-config | Deploy each config file in /etc/httpd
+- name: make-config | Deploy each config file in /etc/httpd/conf
+  notify: Restart Apache
+  template:
+    src:  "etc/httpd/conf/{{ item }}.j2"
+    dest: "{{ apache.configroot }}/{{ item }}"
+    mode: "0644"
+  with_items:
+    - "httpd.conf"
+
+- name: make-config | Deploy each config file in /etc/httpd/conf.d
+  notify: Restart Apache
+  template:
+    src:  "etc/httpd/conf.d/{{ item }}.j2"
+    dest: "{{ apache.serverroot }}/conf.d/{{ item }}"
+    mode: "0644"
+  with_items:
+    - "autoindex.conf"
+    - "fcgid.conf"
+    - "manual.conf"
+    - "php.conf"
+    - "ssl.conf"
+    - "userdir.conf"
+    - "welcome.conf"
+
+
+- name: make-config | Deploy each config file in /etc/httpd/conf.modules.d
+  notify: Restart Apache
+  template:
+    src:  "etc/httpd/conf/{{ item }}.j2"
+    dest: "{{ apache.serverroot }}/conf.modules.d/{{ item }}"
+    mode: "0644"
+  with_items:
+    - "00-base.conf"
+    - "00-dav.conf"
+    - "00-lua.conf"
+    - "00-mpm.conf"
+    - "00-proxy.conf"
+    - "00-ssl.conf"
+    - "00-systemd.conf"
+    - "01-cgi.conf"
+    - "10-fcgid.conf"
+    - "10-php.conf"
+

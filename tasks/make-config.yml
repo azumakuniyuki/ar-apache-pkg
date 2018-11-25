@@ -41,8 +41,8 @@
 - name: make-config | Deploy each file in /etc/httpd/conf.vhosts.d
   notify: Restart Apache
   template:
-    src:  "etc/httpd/conf.vhosts.d/{{ item }}.j2"
-    dest: "{{ apache.serverroot }}/conf.vhosts.d/{{ item }}"
+    src:  "etc/httpd/conf.vhosts.d/{{ item }}.conf.j2"
+    dest: "{{ apache.serverroot }}/conf.vhosts.d/{{ item }}.conf"
     mode: "0644"
   with_items: "{{ apache.virtualhosts }}"
 

@@ -22,7 +22,6 @@
         - "php-mbstring"
         - "php-mcrypt"
         - "php-pgsql"
-        - "php-mysql"
         - "php-mysqlnd"
         - "php-xml"
 

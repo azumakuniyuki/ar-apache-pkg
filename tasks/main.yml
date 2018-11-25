@@ -8,6 +8,6 @@
 # tasks file for ar-apache-pkg
 - include: install-pkg.yml
 - include: make-config.yml
+- include: php5-module.yml
 - include: boot-script.yml
 - include: port-config.yml
-

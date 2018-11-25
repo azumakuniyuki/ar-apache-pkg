@@ -2,7 +2,12 @@
 # PHP is an HTML-embedded scripting language which attempts to make it
 # easy for developers to write dynamically generated webpages.
 #
+{% if apache.php5module == true %}
 <IfModule prefork.c>
-  LoadModule php5_module modules/libphp5.so
+    LoadModule php5_module modules/libphp5.so
 </IfModule>
-
+{% else %}
+###<IfModule prefork.c>
+###    LoadModule php5_module modules/libphp5.so
+###</IfModule>
+{% endif %}

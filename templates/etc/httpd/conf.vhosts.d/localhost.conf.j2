@@ -3,7 +3,9 @@
     ServerAlias localhost.localdomain
     DocumentRoot /var/www/html
 
-    <RequireAny>
-        Require ip 127.0.0.1/32
-    </RequireAny>
+    <Directory "/var/www/html">
+        <RequireAny>
+            Require ip 127.0.0.1/32
+        </RequireAny>
+    </Directory>
 </VirtualHost>

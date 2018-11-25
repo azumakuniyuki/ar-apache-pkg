@@ -9,5 +9,6 @@
 - include: install-pkg.yml
 - include: make-config.yml
 - include: php5-module.yml
+  when: apache.php5module == true
 - include: boot-script.yml
 - include: port-config.yml

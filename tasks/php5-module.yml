@@ -7,7 +7,7 @@
 #       |_|                          \_\_|        |___/_/                            
 # php5-module
 - block: 
-    - name: install-pkg | RedHat | PHP5 packages should be installed
+    - name: php5-module | RedHat | PHP5 packages should be installed
       yum:
         name:  "{{ item }}"
         state: "present"
@@ -25,7 +25,7 @@
         - "php-mysqlnd"
         - "php-xml"
 
-    - name: install-pkg | RedHat | PHP5 pear packages should be installed
+    - name: php5-module | RedHat | PHP5 pear packages should be installed
       yum:
         name:  "{{ item }}"
         state: "present"
@@ -71,7 +71,7 @@
         - "php-pear-XML-SVG"
         - "php-pear-XML-Serializer"
 
-    - name: install-pkg | RedHat | PHP5 pecl packages should be installed
+    - name: php5-module | RedHat | PHP5 pecl packages should be installed
       yum:
         name:  "{{ item }}"
         state: "present"
@@ -81,4 +81,54 @@
         - "php-pecl-ncurses"
         - "php-pecl-uuid"
 
-  when: apache.php5module == true
+    - name: php5-module | Deploy /etc/php.ini
+      notify: Restart Apache
+      template:
+        src:  "etc/php.ini.j2"
+        dest: "/etc/php.ini"
+        mode: "0644"
+
+    - name: php5-module | Deploy each config file in /etc/php.d
+      notify: Restart Apache
+      template:
+        src:  "etc/php.d/{{ item }}.j2"
+        dest: "/etc/php.d/{{ item }}"
+        mode: "0644"
+      with_items:
+        - "apfd.ini"
+        - "curl.ini"
+        - "dom.ini"
+        - "fileinfo.ini"
+        - "gd.ini"
+        - "imagick.ini"
+        - "json.ini"
+        - "json_post.ini"
+        - "mbstring.ini"
+        - "mcrypt.ini"
+        - "mysqlnd.ini"
+        - "mysqlnd_mysql.ini"
+        - "mysqlnd_mysqli.ini"
+        - "ncurses.ini"
+        - "pdo.ini"
+        - "pdo_mysqlnd.ini"
+        - "pdo_pgsql.ini"
+        - "pdo_sqlite.ini"
+        - "pgsql.ini"
+        - "phar.ini"
+        - "posix.ini"
+        - "propro.ini"
+        - "raphf.ini"
+        - "sqlite3.ini"
+        - "sysvmsg.ini"
+        - "sysvsem.ini"
+        - "sysvshm.ini"
+        - "uuid.ini"
+        - "wddx.ini"
+        - "xmlreader.ini"
+        - "xmlrpc.ini"
+        - "xmlwriter.ini"
+        - "xsl.ini"
+        - "z-http.ini"
+        - "zip.ini"
+
+  when: ansible_os_family == "RedHat"

@@ -13,4 +13,6 @@ apache:
   configroot: "/etc/httpd/conf"
   workingdir: "/usr/local/src"
   php5module: true
+  virtualhosts:
+    - "localhost"
 

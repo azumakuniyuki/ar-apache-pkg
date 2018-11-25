@@ -92,7 +92,7 @@ ServerAdmin hostmaster@{{ ansible_fqdn }}
 #
 # If your host doesn't have a registered DNS name, enter its IP address here.
 #
-#ServerName www.example.com:80
+ServerName {{ ansible_default_ipv4.address }}:80
 
 #
 # Deny access to the entirety of your server's filesystem. You must
@@ -351,4 +351,7 @@ EnableSendfile on
 #
 # Load config files in the "/etc/httpd/conf.d" directory, if any.
 IncludeOptional conf.d/*.conf
+
+# Load config files for VirualHosts in the /etc/httpd/conf.vhosts.d" directory
+IncludeOptional conf.vhosts.d/*.conf
 

@@ -30,6 +30,21 @@
     - "userdir.conf"
     - "welcome.conf"
 
+- name: make-config | /etc/httpd/conf.vhosts.d should be exist
+  file:
+    path:   "{{ apache.serverroot }}/conf.vhosts.d"
+    state:  "directory"
+    owner:  "root"
+    group:  "root"
+    mode:   "0755"
+
+- name: make-config | Deploy each file in /etc/httpd/conf.vhosts.d
+  notify: Restart Apache
+  template:
+    src:  "etc/httpd/conf.vhosts.d/{{ item }}.j2"
+    dest: "{{ apache.serverroot }}/conf.vhosts.d/{{ item }}"
+    mode: "0644"
+  with_items: "{{ apache.virtualhosts }}"
 
 - name: make-config | Deploy each config file in /etc/httpd/conf.modules.d
   notify: Restart Apache

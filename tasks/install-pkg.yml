@@ -32,5 +32,6 @@
       with_items:
         - "curl"
         - "wget"
+        - "cronolog"
   when: ansible_os_family == "RedHat"
 

@@ -38,6 +38,14 @@
     group:  "root"
     mode:   "0755"
 
+- name: make-config | /etc/httpd/ssl should be exist
+  file:
+    path:   "{{ apache.serverroot }}/ssl"
+    state:  "directory"
+    owner:  "root"
+    group:  "root"
+    mode:   "0755"
+
 - name: make-config | Deploy each file in /etc/httpd/conf.vhosts.d
   notify: Restart Apache
   template:

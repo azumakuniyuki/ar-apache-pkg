@@ -81,6 +81,50 @@
         - "php-pecl-ncurses"
         - "php-pecl-uuid"
 
+    - name: php5-module | Clone eAccelerator.git
+      git:
+        repo:  "https://github.com/eaccelerator/eaccelerator.git"
+        dest:  "/usr/local/src/eaccelerator"
+        clone: "yes"
+
+    - name: php5-module | Compile eAccelerator(1)
+      shell: >
+        /usr/bin/phpize
+      args:
+        chdir:   "/usr/local/src/eaccelerator"
+        creates: "configure"
+
+    - name: php5-module | Compile eAccelerator(2)
+      shell: >
+        ./configure --enable-shared --with-php-config=/usr/bin/php-config
+      args:
+        chdir:   "/usr/local/src/eaccelerator"
+        creates: "Makefile"
+
+    - name: php5-module | Compile eAccelerator(3)
+      register: make_ea_binary
+      shell: >
+        make
+      args:
+        chdir:   "/usr/local/src/eaccelerator"
+        creates: "modules/eaccelerator.so"
+
+    - name: php5-module | Install eAccelerator
+      when: make_ea_binary is success
+      shell: >
+        make install
+      args:
+        chdir:   "/usr/local/src/eaccelerator"
+        creates: "/usr/lib64/php/modules/eaccelerator.so"
+
+    - name: php5-module | Cache directory should be exist
+      file:
+        path:  "/tmp/eaccelerator"
+        mode:  "0775"
+        state: "directory"
+        owner: "{{ apache.user.username }}"
+        group: "{{ apache.user.group }}"
+
     - name: php5-module | Deploy /etc/php.ini
       notify: Restart Apache
       template:
@@ -91,44 +135,9 @@
     - name: php5-module | Deploy each config file in /etc/php.d
       notify: Restart Apache
       template:
-        src:  "etc/php.d/{{ item }}.j2"
-        dest: "/etc/php.d/{{ item }}"
+        src:  "{{ item }}"
+        dest: "/etc/php.d/{{ item | basename | replace('.j2', '') }}"
         mode: "0644"
-      with_items:
-        - "apfd.ini"
-        - "curl.ini"
-        - "dom.ini"
-        - "fileinfo.ini"
-        - "gd.ini"
-        - "imagick.ini"
-        - "json.ini"
-        - "json_post.ini"
-        - "mbstring.ini"
-        - "mcrypt.ini"
-        - "mysqlnd.ini"
-        - "mysqlnd_mysql.ini"
-        - "mysqlnd_mysqli.ini"
-        - "ncurses.ini"
-        - "pdo.ini"
-        - "pdo_mysqlnd.ini"
-        - "pdo_pgsql.ini"
-        - "pdo_sqlite.ini"
-        - "pgsql.ini"
-        - "phar.ini"
-        - "posix.ini"
-        - "propro.ini"
-        - "raphf.ini"
-        - "sqlite3.ini"
-        - "sysvmsg.ini"
-        - "sysvsem.ini"
-        - "sysvshm.ini"
-        - "uuid.ini"
-        - "wddx.ini"
-        - "xmlreader.ini"
-        - "xmlrpc.ini"
-        - "xmlwriter.ini"
-        - "xsl.ini"
-        - "z-http.ini"
-        - "zip.ini"
-
+      with_fileglob: "templates/etc/php.d/*.ini.j2"
   when: ansible_os_family == "RedHat"
+

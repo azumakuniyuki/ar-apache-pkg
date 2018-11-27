@@ -18,17 +18,10 @@
 - name: make-config | Deploy each config file in /etc/httpd/conf.d
   notify: Restart Apache
   template:
-    src:  "etc/httpd/conf.d/{{ item }}.j2"
-    dest: "{{ apache.serverroot }}/conf.d/{{ item }}"
+    src:  "{{ item }}"
+    dest: "{{ apache.serverroot }}/conf.d/{{ item | basename | replace('.j2', '') }}"
     mode: "0644"
-  with_items:
-    - "autoindex.conf"
-    - "fcgid.conf"
-    - "manual.conf"
-    - "php.conf"
-    - "ssl.conf"
-    - "userdir.conf"
-    - "welcome.conf"
+  with_fileglob: "templates{{ apache.serverroot }}/conf.d/*.conf.j2"
 
 - name: make-config | /etc/httpd/conf.vhosts.d should be exist
   file:
@@ -49,26 +42,16 @@
 - name: make-config | Deploy each file in /etc/httpd/conf.vhosts.d
   notify: Restart Apache
   template:
-    src:  "etc/httpd/conf.vhosts.d/{{ item }}.conf.j2"
-    dest: "{{ apache.serverroot }}/conf.vhosts.d/{{ item }}.conf"
+    src:  "{{ item }}"
+    dest: "{{ apache.serverroot }}/conf.vhosts.d/{{ item | basename | replace('.j2', '') }}"
     mode: "0644"
-  with_items: "{{ apache.virtualhosts }}"
+  with_fileglob: "templates{{ apache.serverroot }}/conf.vhosts.d/*.conf.j2"
 
 - name: make-config | Deploy each config file in /etc/httpd/conf.modules.d
   notify: Restart Apache
   template:
-    src:  "etc/httpd/conf.modules.d/{{ item }}.j2"
-    dest: "{{ apache.serverroot }}/conf.modules.d/{{ item }}"
+    src:  "{{ item }}"
+    dest: "{{ apache.serverroot }}/conf.modules.d/{{ item | basename | replace('.j2', '') }}"
     mode: "0644"
-  with_items:
-    - "00-base.conf"
-    - "00-dav.conf"
-    - "00-lua.conf"
-    - "00-mpm.conf"
-    - "00-proxy.conf"
-    - "00-ssl.conf"
-    - "00-systemd.conf"
-    - "01-cgi.conf"
-    - "10-fcgid.conf"
-    - "10-php.conf"
+  with_fileglob: "templates{{ apache.serverroot }}/conf.modules.d/*.conf.j2"
 

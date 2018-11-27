@@ -2,6 +2,8 @@
     ServerName localhost
     ServerAlias localhost.localdomain
     DocumentRoot /var/www/html
+    CustomLog "| /usr/sbin/cronolog logs/http-access-%Y-%m-%d.log" combined env=!nolog
+    ErrorLog  "| /usr/sbin/cronolog logs/http-errors-%Y-%m-%d.log"
 
     <Directory "/var/www/html">
         <RequireAny>

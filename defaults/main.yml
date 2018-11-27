@@ -13,6 +13,11 @@ apache:
   configroot: "/etc/httpd/conf"
   workingdir: "/usr/local/src"
   php5module: true
-  virtualhosts:
-    - "localhost"
+  user:
+    username: "apache"
+    uid: 48
+    gid: 48
+    group: "apache"
+    shell: "/sbin/nolgin"
+    comment: "Apache"
 

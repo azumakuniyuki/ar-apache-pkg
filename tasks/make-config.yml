@@ -55,3 +55,10 @@
     mode: "0644"
   with_fileglob: "templates{{ apache.serverroot }}/conf.modules.d/*.conf.j2"
 
+- name: make-config | Deploy log rotation file into /etc/logrotat.d
+  template:
+    src:  "{{ item }}"
+    dest: "/etc/logrotate.d/{{ item | basename | replace('.j2', '') }}"
+    mode: "0644"
+  with_fileglob: "templates/etc/logrotate.d/*.j2"
+  

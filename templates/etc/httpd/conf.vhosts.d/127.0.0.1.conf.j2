@@ -2,8 +2,10 @@
     ServerName   127.0.0.1
     ServerAlias  localhost localhost.localdomain
     DocumentRoot /var/www/html
-    CustomLog    "|/usr/sbin/rotatelogs -cl logs/127.0.0.1-http-access-%Y-%m-%d.log 86400" combined env=!nolog
-    ErrorLog     "|/usr/sbin/rotatelogs -cl logs/127.0.0.1-http-errors-%Y-%m-%d.log 86400"
+    CustomLog    "|/usr/sbin/rotatelogs -L logs/127.0.0.1-http-access.log \
+        -cl logs/127.0.0.1-http-access-%Y-%m-%d.log 86400" combined env=!nolog
+    ErrorLog     "|/usr/sbin/rotatelogs -L logs/127.0.0.1-http-errors.log \
+        -cl logs/127.0.0.1-http-errors-%Y-%m-%d.log 86400"
 
     <Directory "/var/www/html">
         <RequireAny>
@@ -11,3 +13,4 @@
         </RequireAny>
     </Directory>
 </VirtualHost>
+

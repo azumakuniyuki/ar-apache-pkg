@@ -62,3 +62,9 @@
     mode: "0644"
   with_fileglob: "templates/etc/logrotate.d/*.j2"
   
+- name: make-config | Deploy Makefile into /var/log/httpd
+  template:
+    src:  "var/log/httpd/Makefile.j2"
+    dest: "/var/log/httpd/Makefile"
+    mode: "0644"
+

@@ -6,17 +6,34 @@
 #  \__,_| .__/ \__,_|\___|_| |_|\___| || .__/|_|\_\__, | /_/   \__\__,_|___/_|\_\___/
 #       |_|                          \_\_|        |___/_/                            
 # port-config
-- name: port-config | HTTP(80) port should be opened
+- name: port-config | /usr/bin/firewall-cmd exists or not
+  register: firewallcmd
+  failed_when: firewallcmd.rc < 0
+  changed_when: firewallcmd.rc > 1
+  command: which firewall-cmd > /dev/null
+
+- name: port-config | Each HTTP related port should be opened
+  when: firewallcmd.rc == 0
   firewalld:
-    service:   "http"
+    service:   "{{ item }}"
     state:     "enabled"
     immediate: true
     permanent: true
+  with_items: ["http", "443/tcp"]
 
-- name: port-config | HTTPS(443) port should be opened
-  firewalld:
-    port:      "443/tcp"
-    state:     "enabled"
-    immediate: true
-    permanent: true
-
+- block:
+    - name: port-config | Linux | Each HTTP related port should be opened
+      when: firewallcmd.rc == 1
+      iptables:
+        comment:     "open {{ item }}"
+        chain:       "INPUT"
+        source:      "0.0.0.0"
+        destination: "{{ ansible_default_ipv4.address }}"
+        destination_port: "{{ item }}"
+        protocol:    "tcp"
+        jump:        "ACCEPT"
+      with_items:
+        - "80"
+        - "443"
+  when: ansible_system == "Linux"
+    

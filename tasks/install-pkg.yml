@@ -14,24 +14,22 @@
 
     - name: install-pkg | RedHat | Apache related packages should be installed
       yum:
-        name:  "{{ item }}"
         state: "present"
-      with_items:
-        - "apr"
-        - "apr-util"
-        - "httpd-devel"
-        - "httpd-tools"
-        - "apachetop"
-        - "munin-apache"
-        - "mod_ssl"
+        name:
+          - "apr"
+          - "apr-util"
+          - "httpd-devel"
+          - "httpd-tools"
+          - "apachetop"
+          - "munin-apache"
+          - "mod_ssl"
 
     - name: install-pkg | RedHat | HTTP related packages should be installed
       yum:
-        name:  "{{ item }}"
         state: "present"
-      with_items:
-        - "curl"
-        - "wget"
-        - "cronolog"
+        name:
+          - "curl"
+          - "wget"
+          - "cronolog"
   when: ansible_os_family == "RedHat"
 

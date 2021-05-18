@@ -9,12 +9,12 @@
 - name: boot-script | Apache should be started
   when: apache.started == true
   service:
-    name:    "httpd"
-    enabled: "yes"
+    name:  "httpd"
+    state: "started"
 
 - name: boot-script | Apache should be enabled
   when: apache.enabled == true
   service:
-    name:  "httpd"
-    state: "started"
+    name:    "httpd"
+    enabled: "yes"
 

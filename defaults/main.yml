@@ -6,18 +6,40 @@
 #  \__,_| .__/ \__,_|\___|_| |_|\___| || .__/|_|\_\__, | /_/ \__,_|\___|_|  \__,_|\__,_|_|\__|___/
 #       |_|                          \_\_|        |___/_/                                         
 # defaults file for ar-apache-pkg
+# Red Hat
 apache:
+  name: "httpd"
   enabled: true
   started: true
   serverroot: "/etc/httpd"
   configroot: "/etc/httpd/conf"
   workingdir: "/usr/local/src"
   php5module: true
+  phpversion: 5
   user:
     username: "apache"
     uid: 48
     gid: 48
     group: "apache"
-    shell: "/sbin/nolgin"
+    shell: "/sbin/nologin"
     comment: "Apache"
+
+# Ubuntu
+#apache:
+#  name: "apache2"
+#  enabled: true
+#  started: true
+#  serverroot: "/etc/apache2"
+#  configroot: "/etc/apache2"
+#  loggingdir: "/var/log/apache2"
+#  workingdir: "/usr/local/src"
+#  php7module: true
+#  phpversion: "7.4"
+#  user:
+#    username: "www-data"
+#    uid: 33
+#    gid: 33
+#    group: "www-data"
+#    shell: "/usr/sbin/nologin"
+#    comment: "www-data"
 

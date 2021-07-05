@@ -1,0 +1,111 @@
+---
+#                         _           __      _       __     ___            _        
+#   __ _ _ __   __ _  ___| |__   ___ / /_ __ | | ____ \ \   / / |_ __ _ ___| | _____ 
+#  / _` | '_ \ / _` |/ __| '_ \ / _ \ || '_ \| |/ / _` | | / /| __/ _` / __| |/ / __|
+# | (_| | |_) | (_| | (__| | | |  __/ || |_) |   < (_| | |/ / | || (_| \__ \   <\__ \
+#  \__,_| .__/ \__,_|\___|_| |_|\___| || .__/|_|\_\__, | /_/   \__\__,_|___/_|\_\___/
+#       |_|                          \_\_|        |___/_/                            
+# php7-module
+- block: 
+    - name: php7-module | Debian | PHP5 packages should be installed
+      yum:
+        state: "present"
+        name:
+          - "php"
+          - "php-all-dev"
+          - "php-bcmath"
+          - "php-bz2"
+          - "php-cgi"
+          - "php-cli"
+          - "php-common"
+          - "php-console-commandline"
+          - "php-curl"
+          - "php-date"
+          - "php-db"
+          - "php-db-dataobject"
+          - "php-dev"
+          - "php-ds"
+          - "php-email-validator"
+          - "php-file-iterator"
+          - "php-font-lib"
+          - "php-fpdf"
+          - "php-fpm"
+          - "php-fxsl"
+          - "php-gd"
+          - "php-geoip"
+          - "php-gmp"
+          - "php-http"
+          - "php-http-httplug"
+          - "php-http-message-factory"
+          - "php-http-request"
+          - "php-http-request2"
+          - "php-httpful"
+          - "php-imagick"
+          - "php-imap"
+          - "php-json"
+          - "php-json-schema"
+          - "php-log"
+          - "php-mail"
+          - "php-mail-mime"
+          - "php-mailparse"
+          - "php-mbstring"
+          - "php-mdb2"
+          - "php-mdb2-driver-mysql"
+          - "php-mdb2-driver-pgsql"
+          - "php-memcache"
+          - "php-memcached"
+          - "php-mime-type"
+          - "php-mysql"
+          - "php-net-dime"
+          - "php-net-dns2"
+          - "php-net-ftp"
+          - "php-net-imap"
+          - "php-net-nntp"
+          - "php-net-smtp"
+          - "php-net-socket"
+          - "php-net-url"
+          - "php-net-url2"
+          - "php-odbc"
+          - "php-parser"
+          - "php-pear"
+          - "php-pecl-http"
+          - "php-pecl-http-dev"
+          - "php-pgsql"
+          - "php-phpdbg"
+          - "php-shellcommand"
+          - "php-sql-formatter"
+          - "php-sqlite3"
+          - "php-ssh2"
+          - "php-uuid"
+          - "php-validate"
+          - "php-xdebug"
+          - "php-xml"
+          - "php-xml-htmlsax3"
+          - "php-xml-rpc2"
+          - "php-xml-svg"
+          - "php-xmlrpc"
+          - "php-yaml"
+          - "php-zend-code"
+          - "php-zend-eventmanager"
+          - "php-zend-stdlib"
+          - "php-zip"
+
+    - name: php7-module | Deploy /etc/php/{{ apache.phpversion }}/*/php.ini
+      notify: Restart Apache
+      template:
+        src:  "etc/php/{{ apache.phpversion }}/{{ item }}/php.ini.j2"
+        dest: "/etc/php/{{ apache.phpversion }}/{{ item }}/php.ini"
+        mode: "0644"
+      loop:
+        - "cli"
+        - "apache"
+
+    - name: php7-module | Deploy each config file in /etc/php/{{ apache.phpversion }}/mods-available
+      notify: Restart Apache
+      template:
+        src:  "{{ item }}"
+        dest: "/etc/php/{{ apache.phpversion }}/mods-available/{{ item | basename | replace('.j2', '') }}"
+        mode: "0644"
+      with_fileglob: "templates/etc/php/{{ apache.phpversion }}/mods-available/*.ini.j2"
+  when: ansible_os_family == "Debian"
+

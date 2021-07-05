@@ -10,6 +10,8 @@
 - include: make-config.yml
 - include: php5-module.yml
   when: apache.php5module == true
+- include: php7-module.yml
+  when: apache.php7module == true
 - include: build-local.yml
 - include: boot-script.yml
 - include: port-config.yml

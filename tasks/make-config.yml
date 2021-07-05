@@ -6,65 +6,131 @@
 #  \__,_| .__/ \__,_|\___|_| |_|\___| || .__/|_|\_\__, | /_/   \__\__,_|___/_|\_\___/
 #       |_|                          \_\_|        |___/_/                            
 # make-config
-- name: make-config | Deploy each config file in /etc/httpd/conf
-  notify: Restart Apache
-  template:
-    src:  "etc/httpd/conf/{{ item }}.j2"
-    dest: "{{ apache.configroot }}/{{ item }}"
-    mode: "0644"
-  with_items:
-    - "httpd.conf"
+- block:
+  - name: make-config | RedHat | Deploy each config file in /etc/httpd/conf
+    notify: Restart Apache
+    template:
+      src:  "etc/httpd/conf/{{ item }}.j2"
+      dest: "{{ apache.configroot }}/{{ item }}"
+      mode: "0644"
+    with_items:
+      - "httpd.conf"
+  
+  - name: make-config | RedHat | Deploy each config file in /etc/httpd/conf.d
+    notify: Restart Apache
+    template:
+      src:  "{{ item }}"
+      dest: "{{ apache.serverroot }}/conf.d/{{ item | basename | replace('.j2', '') }}"
+      mode: "0644"
+    with_fileglob: "templates{{ apache.serverroot }}/conf.d/*.conf.j2"
+  
+  - name: make-config | RedHat | /etc/httpd/conf.vhosts.d should be exist
+    file:
+      path:   "{{ apache.serverroot }}/conf.vhosts.d"
+      state:  "directory"
+      owner:  "root"
+      group:  "root"
+      mode:   "0755"
+  
+  - name: make-config | RedHat | /etc/httpd/ssl should be exist
+    file:
+      path:   "{{ apache.serverroot }}/ssl"
+      state:  "directory"
+      owner:  "root"
+      group:  "root"
+      mode:   "0755"
+  
+  - name: make-config | RedHat | Deploy each file in /etc/httpd/conf.vhosts.d
+    notify: Restart Apache
+    template:
+      src:  "{{ item }}"
+      dest: "{{ apache.serverroot }}/conf.vhosts.d/{{ item | basename | replace('.j2', '') }}"
+      mode: "0644"
+    with_fileglob: "templates{{ apache.serverroot }}/conf.vhosts.d/*.conf.j2"
+  
+  - name: make-config | RedHat | Deploy each config file in /etc/httpd/conf.modules.d
+    notify: Restart Apache
+    template:
+      src:  "{{ item }}"
+      dest: "{{ apache.serverroot }}/conf.modules.d/{{ item | basename | replace('.j2', '') }}"
+      mode: "0644"
+    with_fileglob: "templates{{ apache.serverroot }}/conf.modules.d/*.conf.j2"
+ when: ansible_os_family == "RedHat" 
 
-- name: make-config | Deploy each config file in /etc/httpd/conf.d
-  notify: Restart Apache
-  template:
-    src:  "{{ item }}"
-    dest: "{{ apache.serverroot }}/conf.d/{{ item | basename | replace('.j2', '') }}"
-    mode: "0644"
-  with_fileglob: "templates{{ apache.serverroot }}/conf.d/*.conf.j2"
+- block:
+  - name: make-config | Debian | Deploy each config file in /etc/apache2
+    notify: Restart Apache
+    template:
+      src:  "etc/apache2/{{ item }}.j2"
+      dest: "{{ apache.configroot }}/{{ item }}"
+      mode: "0644"
+    with_items:
+      - "apache2.conf"
+      - "envvers"
+      - "magic"
+      - "ports.conf"
+  
+  - name: make-config | Debian | Deploy each config file in /etc/apache2/conf-available
+    notify: Restart Apache
+    template:
+      src:  "{{ item }}"
+      dest: "{{ apache.serverroot }}/conf-available/{{ item | basename | replace('.j2', '') }}"
+      mode: "0644"
+    with_fileglob: "templates{{ apache.serverroot }}/conf-available/*.conf.j2"
 
-- name: make-config | /etc/httpd/conf.vhosts.d should be exist
-  file:
-    path:   "{{ apache.serverroot }}/conf.vhosts.d"
-    state:  "directory"
-    owner:  "root"
-    group:  "root"
-    mode:   "0755"
+  - name: make-config | Debian | Deploy each config file in /etc/apache2/mods-available
+    notify: Restart Apache
+    template:
+      src:  "{{ item }}"
+      dest: "{{ apache.serverroot }}/mods-available/{{ item | basename | replace('.j2', '') }}"
+      mode: "0644"
+    with_fileglob: "templates{{ apache.serverroot }}/mods-available/*.conf.j2"
 
-- name: make-config | /etc/httpd/ssl should be exist
-  file:
-    path:   "{{ apache.serverroot }}/ssl"
-    state:  "directory"
-    owner:  "root"
-    group:  "root"
-    mode:   "0755"
+  - name: make-config | Debian | Deploy each config file in /etc/apache2/sites-available
+    notify: Restart Apache
+    template:
+      src:  "{{ item }}"
+      dest: "{{ apache.serverroot }}/sites-available/{{ item | basename | replace('.j2', '') }}"
+      mode: "0644"
+    with_fileglob: "templates{{ apache.serverroot }}/sites-available/*.conf.j2"
 
-- name: make-config | Deploy each file in /etc/httpd/conf.vhosts.d
-  notify: Restart Apache
-  template:
-    src:  "{{ item }}"
-    dest: "{{ apache.serverroot }}/conf.vhosts.d/{{ item | basename | replace('.j2', '') }}"
-    mode: "0644"
-  with_fileglob: "templates{{ apache.serverroot }}/conf.vhosts.d/*.conf.j2"
-
-- name: make-config | Deploy each config file in /etc/httpd/conf.modules.d
-  notify: Restart Apache
-  template:
-    src:  "{{ item }}"
-    dest: "{{ apache.serverroot }}/conf.modules.d/{{ item | basename | replace('.j2', '') }}"
-    mode: "0644"
-  with_fileglob: "templates{{ apache.serverroot }}/conf.modules.d/*.conf.j2"
+  - name: make-config | Debian | SSL related directories in /etc/apache2 should be exist
+    file:
+      path:   "{{ apache.serverroot }}/{{ item }}"
+      state:  "directory"
+      owner:  "root"
+      group:  "root"
+      mode:   "0755"
+    with_items:
+      - "certificates"
+      - "private-keys"
+  
+  - name: make-config | Debian | Deploy each file in /etc/httpd/conf.vhosts.d
+    notify: Restart Apache
+    template:
+      src:  "{{ item }}"
+      dest: "{{ apache.serverroot }}/conf.vhosts.d/{{ item | basename | replace('.j2', '') }}"
+      mode: "0644"
+    with_fileglob: "templates{{ apache.serverroot }}/conf.vhosts.d/*.conf.j2"
+  
+  - name: make-config | Debian | Deploy each config file in /etc/httpd/conf.modules.d
+    notify: Restart Apache
+    template:
+      src:  "{{ item }}"
+      dest: "{{ apache.serverroot }}/conf.modules.d/{{ item | basename | replace('.j2', '') }}"
+      mode: "0644"
+    with_fileglob: "templates{{ apache.serverroot }}/conf.modules.d/*.conf.j2"
+ when: ansible_os_family == "RedHat" 
 
 - name: make-config | Deploy log rotation file into /etc/logrotat.d
   template:
-    src:  "{{ item }}"
-    dest: "/etc/logrotate.d/{{ item | basename | replace('.j2', '') }}"
+    src:  "etc/logrotate.d/{{ apache.name }}.j2"
+    dest: "/etc/logrotate.d/{{ apache.name }}"
     mode: "0644"
-  with_fileglob: "templates/etc/logrotate.d/*.j2"
-  
-- name: make-config | Deploy Makefile into /var/log/httpd
+
+- name: make-config | Deploy Makefile into /var/log/{{ apache.name }}
   template:
-    src:  "var/log/httpd/Makefile.j2"
-    dest: "/var/log/httpd/Makefile"
+    src:  "var/log/{{ apache.name }}/Makefile.j2"
+    dest: "/var/log/{{ apache.name }}/Makefile"
     mode: "0644"
 

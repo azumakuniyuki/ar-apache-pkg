@@ -6,20 +6,33 @@
 #  \__,_| .__/ \__,_|\___|_| |_|\___| || .__/|_|\_\__, | /_/   \__\__,_|___/_|\_\___/
 #       |_|                          \_\_|        |___/_/                            
 # port-config
-- name: port-config | /usr/bin/firewall-cmd exists or not
-  register: firewallcmd
-  failed_when: firewallcmd.rc < 0
-  changed_when: firewallcmd.rc > 1
-  command: which firewall-cmd > /dev/null
+- block:
+  - name: port-config | RedHat | /usr/bin/firewall-cmd exists or not
+    register: firewallcmd
+    failed_when: firewallcmd.rc < 0
+    changed_when: firewallcmd.rc > 1
+    command: which firewall-cmd > /dev/null
 
-- name: port-config | Each HTTP related port should be opened
-  when: firewallcmd.rc == 0
-  firewalld:
-    service:   "{{ item }}"
-    state:     "enabled"
-    immediate: true
-    permanent: true
-  with_items: ["http", "443/tcp"]
+  - name: port-config | Each HTTP related port should be opened
+    when: firewallcmd.rc == 0
+    firewalld:
+      service:   "{{ item }}"
+      state:     "enabled"
+      immediate: true
+      permanent: true
+    with_items: ["http", "443/tcp"]
+  when: ansible_os_family == "RedHat" 
+
+- block:
+  - name: port-config | Debian | Allow 80 and 443 for Apache
+    register: firewallcmd
+    ufw:
+      rule: "allow"
+      name: "{{ item }}"
+    with_items:
+      - "Apache"
+      - "Apache Secure"
+  when: ansible_os_family == "Debian" 
 
 - block:
     - name: port-config | Linux | Each HTTP related port should be opened

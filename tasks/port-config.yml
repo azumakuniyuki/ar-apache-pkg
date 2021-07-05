@@ -21,6 +21,20 @@
       immediate: true
       permanent: true
     with_items: ["http", "443/tcp"]
+
+  - name: port-config | Linux | Each HTTP related port should be opened
+    when: firewallcmd.rc == 1 or ufwcommand == 1
+    iptables:
+      comment:     "open {{ item }}"
+      chain:       "INPUT"
+      source:      "0.0.0.0"
+      destination: "{{ ansible_default_ipv4.address }}"
+      destination_port: "{{ item }}"
+      protocol:    "tcp"
+      jump:        "ACCEPT"
+    with_items:
+      - "80"
+      - "443"
   when: ansible_os_family == "RedHat" 
 
 - block:
@@ -34,19 +48,3 @@
       - "Apache Secure"
   when: ansible_os_family == "Debian" 
 
-- block:
-    - name: port-config | Linux | Each HTTP related port should be opened
-      when: firewallcmd.rc == 1
-      iptables:
-        comment:     "open {{ item }}"
-        chain:       "INPUT"
-        source:      "0.0.0.0"
-        destination: "{{ ansible_default_ipv4.address }}"
-        destination_port: "{{ item }}"
-        protocol:    "tcp"
-        jump:        "ACCEPT"
-      with_items:
-        - "80"
-        - "443"
-  when: ansible_system == "Linux"
-    

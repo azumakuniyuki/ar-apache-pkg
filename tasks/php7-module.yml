@@ -98,7 +98,7 @@
         mode: "0644"
       loop:
         - "cli"
-        - "apache"
+        - "apache2"
 
     - name: php7-module | Deploy each config file in /etc/php/{{ apache.phpversion }}/mods-available
       notify: Restart Apache

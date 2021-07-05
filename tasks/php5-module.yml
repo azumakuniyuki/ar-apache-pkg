@@ -82,7 +82,7 @@
     - name: php5-module | Deploy /etc/php.ini
       notify: Restart Apache
       template:
-        src:  "etc/php.ini.j2"
+        src:  "etc/php5.ini.j2"
         dest: "/etc/php.ini"
         mode: "0644"
 
@@ -92,6 +92,6 @@
         src:  "{{ item }}"
         dest: "/etc/php.d/{{ item | basename | replace('.j2', '') }}"
         mode: "0644"
-      with_fileglob: "templates/etc/php.d/*.ini.j2"
+      with_fileglob: "templates/etc/php5.d/*.ini.j2"
   when: ansible_os_family == "RedHat"
 

@@ -40,8 +40,8 @@
 	#   to use and second the expiring timeout (in seconds).
 	#   (The mechanism dbm has known memory leaks and should not be used).
 	#SSLSessionCache		 dbm:${APACHE_RUN_DIR}/ssl_scache
-	SSLSessionCache		shmcb:${APACHE_RUN_DIR}/ssl_scache(512000)
-	SSLSessionCacheTimeout  300
+	#SSLSessionCache		shmcb:${APACHE_RUN_DIR}/ssl_scache(512000)
+	#SSLSessionCacheTimeout  300
 
 	#   Semaphore:
 	#   Configure the path to the mutual exclusion semaphore the

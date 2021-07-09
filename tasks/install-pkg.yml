@@ -48,7 +48,7 @@
           - "apachetop"
 
     - name: install-pkg | Debian | HTTP related packages should be installed
-      yum:
+      apt:
         state: "present"
         name:
           - "curl"

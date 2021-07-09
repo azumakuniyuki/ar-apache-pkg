@@ -8,6 +8,6 @@
 # handlers file for ar-apache-pkg
 - name: Restart Apache
   service:
-    name:  "httpd"
+    name:  "{{ apache.name }}"
     state: "restarted"
 

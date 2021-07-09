@@ -94,6 +94,14 @@
       mode: "0644"
     with_fileglob: "templates{{ apache.serverroot }}/sites-available/*.conf.j2"
 
+  - name: make-config | Debian | Enable each config file in /etc/apache2/sites-available
+    notify: Restart Apache
+    file:
+      src:   "{{ apache.serverroot }}/sites-available/{{ item | basename | replace('.j2', '') }}"
+      dest:  "{{ apache.serverroot }}/sites-enabled/{{ item | basename | replace('.j2', '') }}"
+      state: "link"
+    with_fileglob: "templates{{ apache.serverroot }}/sites-available/*.conf.j2"
+
   - name: make-config | Debian | SSL related directories in /etc/apache2 should be exist
     file:
       path:   "{{ apache.serverroot }}/{{ item }}"
@@ -104,6 +112,26 @@
     with_items:
       - "certificates"
       - "private-keys"
+
+  - name: make-config | Debian | SSL module should be enabled
+    file:
+      src:   "{{ apache.serverroot }}/mods-available/ssl.{{ item }}"
+      dest:  "{{ apache.serverroot }}/mods-enabled/ssl.{{ item }}"
+      state: "link"
+    with_items:
+      - "load"
+      - "conf"
+
+  - name: make-config | Debian | Other modules should be enabled
+    file:
+      src:   "{{ apache.serverroot }}/mods-available/{{ item }}.load"
+      dest:  "{{ apache.serverroot }}/mods-enabled/{{ item }}.load"
+      state: "link"
+    with_items:
+      - "rewrite"
+      - "remoteip"
+      - "ratelimit"
+      - "vhost_alias"
  when: ansible_os_family == "Debian" 
 
 - name: make-config | Deploy log rotation file into /etc/logrotat.d

@@ -90,22 +90,23 @@
           - "php-zend-stdlib"
           - "php-zip"
 
-    - name: php7-module | Deploy /etc/php/{{ apache.phpversion }}/*/php.ini
+    - name: php7-module | Deploy /etc/php/{{ apache.php.version }}/*/php.ini
       notify: Restart Apache
       template:
-        src:  "etc/php/{{ apache.phpversion }}/{{ item }}/php.ini.j2"
-        dest: "/etc/php/{{ apache.phpversion }}/{{ item }}/php.ini"
+        src:  "etc/php/{{ apache.php.version }}/{{ item }}/php.ini.j2"
+        dest: "/etc/php/{{ apache.php.version }}/{{ item }}/php.ini"
         mode: "0644"
       loop:
         - "cli"
+        - "fpm"
         - "apache2"
 
-    - name: php7-module | Deploy each config file in /etc/php/{{ apache.phpversion }}/mods-available
+    - name: php7-module | Deploy each config file in /etc/php/{{ apache.php.version }}/mods-available
       notify: Restart Apache
       template:
         src:  "{{ item }}"
-        dest: "/etc/php/{{ apache.phpversion }}/mods-available/{{ item | basename | replace('.j2', '') }}"
+        dest: "/etc/php/{{ apache.php.version }}/mods-available/{{ item | basename | replace('.j2', '') }}"
         mode: "0644"
-      with_fileglob: "templates/etc/php/{{ apache.phpversion }}/mods-available/*.ini.j2"
+      with_fileglob: "templates/etc/php/{{ apache.php.version }}/mods-available/*.ini.j2"
   when: ansible_os_family == "Debian"
 

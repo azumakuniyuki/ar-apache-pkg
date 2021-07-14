@@ -15,7 +15,13 @@ apache:
   configroot: "/etc/httpd/conf"
   workingdir: "/usr/local/src"
   php5module: true
-  phpversion: 5
+  php:
+    version: "5"
+    errors:
+      log:     "On"
+      display: "On"
+      startup: "On"
+      reporting: "E_ALL"
   user:
     username: "apache"
     uid: 48
@@ -34,7 +40,9 @@ apache:
 #  loggingdir: "/var/log/apache2"
 #  workingdir: "/usr/local/src"
 #  php7module: true
-#  phpversion: "7.4"
+#  php:
+#    version: "7.4"
+#    displayerrors: "On"
 #  user:
 #    username: "www-data"
 #    uid: 33
@@ -42,4 +50,5 @@ apache:
 #    group: "www-data"
 #    shell: "/usr/sbin/nologin"
 #    comment: "www-data"
+
 

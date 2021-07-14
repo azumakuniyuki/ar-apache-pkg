@@ -13,6 +13,8 @@ apache:
   started: true
   serverroot: "/etc/httpd"
   configroot: "/etc/httpd/conf"
+  loggingdir: "/var/log/httpd"
+  lecertsdir: "/etc/letsencrypt"
   workingdir: "/usr/local/src"
   php5module: true
   php:
@@ -38,6 +40,7 @@ apache:
 #  serverroot: "/etc/apache2"
 #  configroot: "/etc/apache2"
 #  loggingdir: "/var/log/apache2"
+#  lecertsdir: "/etc/letsencrypt"
 #  workingdir: "/usr/local/src"
 #  php7module: true
 #  php:

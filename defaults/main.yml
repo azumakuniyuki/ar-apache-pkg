@@ -16,6 +16,9 @@ apache:
   loggingdir: "/var/log/httpd"
   lecertsdir: "/etc/letsencrypt"
   workingdir: "/usr/local/src"
+  sites:
+    disabled:
+      - "default-ssl"
   php5module: true
   php:
     version: "5"
@@ -42,6 +45,9 @@ apache:
 #  loggingdir: "/var/log/apache2"
 #  lecertsdir: "/etc/letsencrypt"
 #  workingdir: "/usr/local/src"
+#  sites:
+#    disabled:
+#      - "default-ssl"
 #  php7module: true
 #  php:
 #    version: "7.4"

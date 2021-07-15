@@ -102,6 +102,14 @@
       state: "link"
     with_fileglob: "templates{{ apache.serverroot }}/sites-available/*.conf.j2"
 
+  - name: make-config | Debian | Each disabled site should be unlined
+    notify: Restart Apache
+    file:
+      path:  "{{ apache.serverroot }}/sites-enabled/{{ item }}.conf"
+      state: "absent"
+    with_items:
+      - "{{ apache.sites.disabled }}"
+
   - name: make-config | Debian | SSL related directories in /etc/apache2 should be exist
     file:
       path:   "{{ apache.serverroot }}/{{ item }}"
@@ -113,14 +121,14 @@
       - "certificates"
       - "private-keys"
 
-  - name: make-config | Debian | SSL module should be enabled
+  - name: make-config | Debian | Each module should be enabled
     file:
-      src:   "{{ apache.serverroot }}/mods-available/ssl.{{ item }}"
-      dest:  "{{ apache.serverroot }}/mods-enabled/ssl.{{ item }}"
+      src:   "{{ apache.serverroot }}/mods-available/{{ item.0 }}.{{ item.1 }}"
+      dest:  "{{ apache.serverroot }}/mods-enabled/{{ item.0 }}.{{ item.1 }}"
       state: "link"
-    with_items:
-      - "load"
-      - "conf"
+    with_nested:
+      - ["ssl", "status", "info"]
+      - ["conf", "load"]
 
   - name: make-config | Debian | Other modules should be enabled
     file:
